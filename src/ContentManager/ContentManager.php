@@ -286,6 +286,17 @@ class ContentManager
         $tableName    = $dataType->translations->last()->getTable();
         $translations = $this->repackContentData($dataType->translations->toArray());
 
+        if (version_compare(Application::VERSION, '7.0') >= 0) {
+
+            foreach($translations as $key => $translation) {
+                $created_at = date('Y-m-d H:i:s', strtotime($translation['created_at']));
+                $updated_at = date('Y-m-d H:i:s', strtotime($translation['updated_at']));
+
+                $translations[$key]['created_at'] = $created_at;
+                $translations[$key]['updated_at'] = $updated_at;
+            }
+        }
+
         $stub = $this->replaceString(
             '{{datatype_slug_statements}}',
             $this->contentGenerator->getDataTypeSlugStatement($dataType),
